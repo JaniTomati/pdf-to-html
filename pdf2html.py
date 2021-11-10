@@ -45,7 +45,7 @@ def parse_arguments(arguments):
 def convert_pdf_to_html(input, output, name):
     """ Convert a pdf to html by invoking Adobe Acrobat DC """
     src = os.path.abspath(input) 
-    dest = os.path.abspath(output + "/" + "name")
+    dest = os.path.abspath(output + "/" + name)
 
     app = Dispatch("AcroExch.AVDoc") # Adobe Acrobat
     app.Open(src, src)
@@ -62,22 +62,25 @@ def main():
     # parse arguments
     arguments = set_up_parser()
     input_path, output_path = parse_arguments(arguments)
-    #input_path = 'VisWeek/"IEEE Vis 2021"/pdfs -o html/2021'
+    #input_path = "D:/IEEE Vis+InfoVis+Vast+VisWeek/VisWeek/IEEE VIS 2021/pdfs"
     #output_path = "html_data/2021/"
 
     # convert pdf2html
     ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error
 
+    conv_cnt = 0
     for workshop_dir in os.listdir(input_path):
         for contribution_dir in os.listdir(input_path + "/" + workshop_dir):
             for filename in os.listdir(input_path + "/" + workshop_dir + "/" + contribution_dir):
                 if filename.endswith(".pdf"):
                     file = input_path + "/" + workshop_dir + "/" + contribution_dir + "/" + filename
-                    print(file)
-                    name = os.path.splitext(file)[0].split("/")[-1]
-                    convert_pdf_to_html(input_path, output_path, name)
-                    break
-            break
+                    name = os.path.splitext(file)[0].split("/")[-1] # get file name without file extension
+                    convert_pdf_to_html(file, output_path, name)
+                    conv_cnt += 1
+                
+                if conv_cnt % 10 == 0:
+                    print("Processed", conv_cnt, "articles.")
+            
         break
 
 

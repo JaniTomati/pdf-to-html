@@ -58,15 +58,10 @@ def convert_pdf_to_html(input, output, name):
     del pdDoc
 
 
-def main():
-    # parse arguments
-    arguments = set_up_parser()
-    input_path, output_path = parse_arguments(arguments)
+def convert_publications(input_path, output_path):
+    """ Specific use case: convert a number of publications from PDF to HTML """
     #input_path = "D:/IEEE Vis+InfoVis+Vast+VisWeek/VisWeek/IEEE VIS 2021/pdfs"
     #output_path = "html_data/2021/"
-
-    # convert pdf2html
-    ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error
 
     conv_cnt = 0
     for workshop_dir in os.listdir(input_path):
@@ -84,6 +79,20 @@ def main():
                 
                     if conv_cnt != 0 and conv_cnt % 10 == 0:
                         print("Processed", conv_cnt, "articles.")
+
+    return conv_cnt
+
+
+def main():
+    # parse arguments
+    arguments = set_up_parser()
+    input_path, output_path = parse_arguments(arguments)
+
+    # convert pdf2html
+    ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error
+
+    conv_cnt = convert_publications(input_path, output_path)
+    print("Processed", conv_cnt, "articles in total.")
             
 
 if __name__ == "__main__":

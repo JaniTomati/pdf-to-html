@@ -75,15 +75,16 @@ def main():
                 if filename.endswith(".pdf"):
                     file = input_path + "/" + workshop_dir + "/" + contribution_dir + "/" + filename
                     name = os.path.splitext(file)[0].split("/")[-1] # get file name without file extension
-                    convert_pdf_to_html(file, output_path, name)
-                    conv_cnt += 1
+
+                    if os.path.isdir(output_path + "/" + name):
+                        print("File", name, "is already converted.")
+                    else:
+                        convert_pdf_to_html(file, output_path, name)
+                        conv_cnt += 1
                 
-                if conv_cnt % 10 == 0:
-                    print("Processed", conv_cnt, "articles.")
+                    if conv_cnt != 0 and conv_cnt % 10 == 0:
+                        print("Processed", conv_cnt, "articles.")
             
-        break
-
-
 
 if __name__ == "__main__":
     main()

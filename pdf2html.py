@@ -36,8 +36,8 @@ def parse_arguments(arguments):
         sys.exit(1)
     
     if not os.path.isdir(output_path):
-        print("Error: Output directory does not exist.\nStopping execution.")
-        sys.exit(1)
+        print("Output directory does not exists.\nCreating new dir at " + output_path + ".")
+        os.mkdir(output_path)
 
     return input_path, output_path
 
@@ -45,6 +45,7 @@ def parse_arguments(arguments):
 def convert_pdf_to_html(input, output):
     """ Convert a pdf to html by invoking Adobe Acrobat DC """
     src = os.path.abspath(input) 
+    print(src)
 
     app = Dispatch("AcroExch.AVDoc") # Adobe Acrobat
     app.Open(src, src)
@@ -58,16 +59,28 @@ def convert_pdf_to_html(input, output):
 
 
 def main():
-    input_file = "vizsnippets_munzner2021.pdf"
-    output_file  = "vizsnippets_munzner2021.html"
-
     # parse arguments
     arguments = set_up_parser()
     input_path, output_path = parse_arguments(arguments)
 
     # convert pdf2html
-    ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error 
-    #convert_pdf_to_html(input_file, output_file)
+    ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error
+
+    convert_pdf_to_html("vizsnippets_munzner2021.pdf", output_path)
+
+""""
+    for workshop_dir in os.listdir(input_path):
+        for contribution_dir in os.listdir(input_path + "/" + workshop_dir):
+            for filename in os.listdir(input_path + "/" + workshop_dir + "/" + contribution_dir):
+                if filename.endswith(".pdf"):
+                    file = input_path + "/" + workshop_dir + "/" + contribution_dir + filename
+                    print(file)
+                    print(output_path)
+                    convert_pdf_to_html(input_path, output_path)
+                    break
+            break
+        break
+"""
 
 
 if __name__ == "__main__":

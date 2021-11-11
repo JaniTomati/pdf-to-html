@@ -69,13 +69,14 @@ def convert_publications(input_path, output_path):
                     name = os.path.splitext(file)[0].split("/")[-1] # get file name without file extension
 
                     if os.path.isdir(output_path + "/" + name):
-                        print("File", name, "is already converted.")
+                        print("File" + name +".pdf is already converted.")
                     else:
                         try:
                             convert_pdf_to_html(file, output_path, name)
+                            print("Converted " + name + ".pdf to HTML.")
                             conv_cnt += 1
                         except Exception as e: # in case something goes wrong with Adobe Acrobat 
-                            print("Error: Something went wrong.\n", e)
+                            print("Error: Something went wrong while converting " + name + ".pdf.\nMessage:", e)
                 
                     if conv_cnt != 0 and conv_cnt % 10 == 0:
                         print("Processed", conv_cnt, "articles.")

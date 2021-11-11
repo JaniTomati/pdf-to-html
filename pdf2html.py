@@ -12,8 +12,8 @@ import os
 import sys
 import argparse
 import winerror
-from win32com.client.dynamic import Dispatch
 
+from win32com.client.dynamic import Dispatch
 from win32com.client.dynamic import ERRORS_BAD_CONTEXT
 
 
@@ -51,7 +51,7 @@ def convert_pdf_to_html(input, output, name):
     app.Open(src, src)
     pdDoc = app.GetPDDoc()
     jsObject = pdDoc.GetJSObject()
-    jsObject.SaveAs(os.path.join(dest, name + ".html"), "com.adobe.acrobat.html")
+    jsObject.SaveAs(os.path.join(dest, name + ".html"), "com.adobe.acrobat.html") # to HTML 
 
     pdDoc.Close()
     app.Close(True)
@@ -60,11 +60,8 @@ def convert_pdf_to_html(input, output, name):
 
 def convert_publications(input_path, output_path):
     """ Specific use case: convert a number of publications from PDF to HTML """
-    #input_path = "D:/IEEE Vis+InfoVis+Vast+VisWeek/VisWeek/IEEE VIS 2021/pdfs"
-    #output_path = "html_data/2021/"
-
     conv_cnt = 0
-    for workshop_dir in os.listdir(input_path):
+    for workshop_dir in os.listdir(input_path): # iterate through subdirectories containing individual workshops 
         for contribution_dir in os.listdir(input_path + "/" + workshop_dir):
             for filename in os.listdir(input_path + "/" + workshop_dir + "/" + contribution_dir):
                 if filename.endswith(".pdf"):
@@ -74,8 +71,11 @@ def convert_publications(input_path, output_path):
                     if os.path.isdir(output_path + "/" + name):
                         print("File", name, "is already converted.")
                     else:
-                        convert_pdf_to_html(file, output_path, name)
-                        conv_cnt += 1
+                        try:
+                            convert_pdf_to_html(file, output_path, name)
+                            conv_cnt += 1
+                        except Exception as e: # in case something goes wrong with Adobe Acrobat 
+                            print("Error: Something went wrong.\n", e)
                 
                     if conv_cnt != 0 and conv_cnt % 10 == 0:
                         print("Processed", conv_cnt, "articles.")
@@ -90,7 +90,6 @@ def main():
 
     # convert pdf2html
     ERRORS_BAD_CONTEXT.append(winerror.E_NOTIMPL) # avoiding "Not implemented" error
-
     conv_cnt = convert_publications(input_path, output_path)
     print("Processed", conv_cnt, "articles in total.")
             
